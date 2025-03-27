@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.configurers.AuthorizeH
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -28,8 +30,13 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails user =User.withUsername("user").password("{noop}123").authorities("read").build();
-        UserDetails adm =User.withUsername("adm").password("{noop}123").authorities("adm").build();
+        UserDetails adm =User.withUsername("admin").password("{bcrypt}$2a$12$wp4JttoZ346TZYaPXxFjxubQPsQewI91j7y76184WYK3Sykbxu22y").authorities("admin").build();
 
         return new InMemoryUserDetailsManager(user, adm);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }
